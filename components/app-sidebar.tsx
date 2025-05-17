@@ -2,24 +2,12 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
   BookOpenTextIcon,
-  Bot,
-  Command,
-  Frame,
-  Heart,
-  Map,
-  PieChart,
   PlusCircle,
   Save,
-  Settings2,
   SquareStackIcon,
-  SquareTerminal,
 } from "lucide-react";
 
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 
 import {
@@ -29,11 +17,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import Image from "next/image";
 import NavLogo from "./nav-logo";
-import { Button } from "./ui/button";
 import { NavPlatform } from "./nav-platform";
-import { platform } from "os";
 import { usePathname } from "next/navigation"
 
 // This is sample data.
@@ -49,70 +34,6 @@ const data = {
     tagline: "Prompting with Paws",
   },
 
-  navMain: [
-    {
-      title: "Playground",
-      url: "",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "Create Prompt",
-          url: "/help",
-        },
-        {
-          title: "Favorites",
-          url: "/",
-        },
-          {
-          title: "Cookbook",
-          url: "/",
-        },
-      ],
-    },
-    {
-      title: "Prompt Architectures",
-      url: "/help",
-      icon: Bot,
-      items: [
-        {
-          title: "RISEN",
-          url: "#",
-        },
-        {
-          title: "FOCUS",
-          url: "#",
-        },
-        {
-          title: "Few Shot",
-          url: "#",
-        },
-        {
-          title: "All",
-          url: "#",
-        },
-      ],
-    },
-
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
-
   platform: [
     {
       name: "New Prompt",
@@ -124,15 +45,16 @@ const data = {
       url: "/saved",
       icon: Save,
     },
-    {
-      name: "Examples",
-      url: "/examples",
-      icon: BookOpenTextIcon,
-    },
+  
      {
       name: "Projects",
       url: "/projects",
       icon: SquareStackIcon,
+    },
+      {
+      name: "Examples",
+      url: "/examples",
+      icon: BookOpenTextIcon,
     },
   ],
 };
@@ -148,7 +70,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavLogo branding={data.branding} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
         <NavPlatform platform={data.platform} pathName={asPathname}/>
       </SidebarContent>
       <SidebarFooter>
