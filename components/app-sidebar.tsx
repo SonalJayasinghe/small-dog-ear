@@ -4,12 +4,17 @@ import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
+  BookOpenTextIcon,
   Bot,
   Command,
   Frame,
+  Heart,
   Map,
   PieChart,
+  PlusCircle,
+  Save,
   Settings2,
+  SquareStackIcon,
   SquareTerminal,
 } from "lucide-react";
 
@@ -26,6 +31,10 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import NavLogo from "./nav-logo";
+import { Button } from "./ui/button";
+import { NavPlatform } from "./nav-platform";
+import { platform } from "os";
+import { usePathname } from "next/navigation"
 
 // This is sample data.
 const data = {
@@ -66,22 +75,22 @@ const data = {
       url: "/help",
       icon: Bot,
       items: [
-        // {
-        //   title: "RISEN",
-        //   url: "#",
-        // },
-        // {
-        //   title: "FOCUS",
-        //   url: "#",
-        // },
-        // {
-        //   title: "Few Shot",
-        //   url: "#",
-        // },
-        // {
-        //   title: "All",
-        //   url: "#",
-        // },
+        {
+          title: "RISEN",
+          url: "#",
+        },
+        {
+          title: "FOCUS",
+          url: "#",
+        },
+        {
+          title: "Few Shot",
+          url: "#",
+        },
+        {
+          title: "All",
+          url: "#",
+        },
       ],
     },
 
@@ -103,9 +112,36 @@ const data = {
       icon: Map,
     },
   ],
+
+  platform: [
+    {
+      name: "New Prompt",
+      url: "/new-prompt",
+      icon: PlusCircle,
+    },
+    {
+      name: "Saved",
+      url: "/saved",
+      icon: Save,
+    },
+    {
+      name: "Examples",
+      url: "/examples",
+      icon: BookOpenTextIcon,
+    },
+     {
+      name: "Projects",
+      url: "/projects",
+      icon: SquareStackIcon,
+    },
+  ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+    const asPathname = usePathname()
+    console.log("asPathname", asPathname)
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -113,7 +149,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavPlatform platform={data.platform} pathName={asPathname}/>
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
