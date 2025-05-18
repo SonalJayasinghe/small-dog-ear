@@ -4,7 +4,7 @@ import connectMongo from "@/lib/mongoose";
 export async function GET(res: Request) {
   try {
     await connectMongo(); 
-    return NextResponse.json({ message: "MongoDB connection successful." });
+    return NextResponse.json({ message: "MongoDB connection successful." }, { status: 200 });
 
   } catch (error) {
     console.error(error);
