@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"  
 import connectMongo from "@/lib/mongoose";
+import User from "@/models/user";
 
 export async function GET(res: Request) {
   try {
@@ -9,5 +10,22 @@ export async function GET(res: Request) {
   } catch (error) {
     console.error(error);
     return NextResponse.json({ message: "MongoDB connection failed." }, { status: 500 });
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const data = await req.json();
+    console.log(data);
+    await connectMongo();
+const doc = await User.findOne({ _id: data.id }).lean();
+    if (!doc) {
+      return NextResponse.json({ message: "User not found." }, { status: 404 });
+    }
+    console.log(doc);
+    return NextResponse.json({ message: doc }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: "Failed to process data." }, { status: 500 });
   }
 }
