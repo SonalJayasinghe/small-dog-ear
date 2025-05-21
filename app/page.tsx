@@ -21,6 +21,7 @@ export default function Home() {
             width={100}
             height={100}
           />
+          <p>{session.user.id}</p>
           <p>{session.user?.name}</p>
           <Button
             variant="outline"

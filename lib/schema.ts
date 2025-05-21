@@ -15,3 +15,22 @@ export const ArchitectureSchema = z.object({
 })
 
 export type Architecture = z.infer<typeof ArchitectureSchema>;
+
+
+export const PromptSchema = z.object({
+    promptName: z.string().min(1).max(50),
+    promptDescription: z.string().min(1).max(200).optional(),
+    prompt: z.array(
+        z.object({
+            sectionName: z.string().min(1).max(50),
+            sectionPrompt: z.string(),
+            subsections: z.array(z.object({
+                subsectionName: z.string().min(1).max(50),
+                subsectionPrompt: z.string(),
+            })).optional(),
+        })
+    ),
+    userId: z.string().optional(),
+})
+
+export type Prompt = z.infer<typeof PromptSchema>; 

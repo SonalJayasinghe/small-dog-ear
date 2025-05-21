@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, {Schema} from "mongoose";
 
-const architecture = new mongoose.Schema({
+
+const architecture = new Schema({
     name: {
         type: String,
         required: true,
@@ -25,18 +26,9 @@ const architecture = new mongoose.Schema({
         required: true,
 
     },
-    userId: {
-        type: String,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now,
-    },
-})
+    userId: String,
+}, 
+{timestamps: true})
 
 const Architecture = mongoose.models.Architecture || mongoose.model("Architecture", architecture);
 
