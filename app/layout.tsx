@@ -5,7 +5,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SessionProvider } from "next-auth/react";
 
 import "./globals.css";
-import Providers from "@/providers/Providers";
+import Providers from "@/providers/providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
