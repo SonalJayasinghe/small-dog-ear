@@ -9,13 +9,9 @@ export default function Providers({ children }: { children: ReactNode }) {
 
   return (
     <NextAuthProvider>
-         <SidebarProvider>
-            <AppSidebar />
             <main>
-              <SidebarTrigger />
               {children}
             </main>
-          </SidebarProvider>
     </NextAuthProvider>
   )
 }
