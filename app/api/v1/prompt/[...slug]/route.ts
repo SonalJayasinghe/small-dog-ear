@@ -29,6 +29,7 @@ export async function GET(req: Request, { params }: { params: Promise<Params> })
 
             const response = doc.map((item) => {
                 return {
+                    id: item._id,
                     promptName: item.promptName,
                     promptDescription: item.promptDescription,
                     prompt: item.prompt.map((section: { sectionName: string; sectionPrompt: string; subsections: any[]; }) => ({
@@ -62,7 +63,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<Params>
         }
 
         try {
-            const doc = await Prompt.findOneAndDelete({ userId: slug[0], promptName: slug[1] })
+            const doc = await Prompt.findOneAndDelete({ userId: slug[0], _id: slug[1] })
             if (!doc) {
                 return NextResponse.json({ error: "Prompt not found." }, { status: 404 });
             }
@@ -75,3 +76,4 @@ export async function DELETE(req: Request, { params }: { params: Promise<Params>
     }
 
 }
+
