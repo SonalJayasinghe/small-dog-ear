@@ -3,28 +3,28 @@ import Prompt from "@/models/prompts";
 import { NextResponse } from "next/server";
 
 interface Params {
-    slug:string
+    slug: string
 }
 
-export async function GET(req:Request, {params}: {params: Promise<Params>} ){
-    const {slug} = await params;
+export async function GET(req: Request, { params }: { params: Promise<Params> }) {
+    const { slug } = await params;
 
-    if(slug.length === 1 ){
-        try{
+    if (slug.length === 1) {
+        try {
             await connectMongo();
         }
-        catch(error){
-            return NextResponse.json({error: "MongoDB connection failed."}, {status: 500});
+        catch (error) {
+            return NextResponse.json({ error: "MongoDB connection failed." }, { status: 500 });
         }
 
-        try{
-            const doc = await Prompt.find({userId: slug[0]}).lean();
-            if(!doc){
-                return NextResponse.json({error: "Prompt not found."}, {status: 404});
+        try {
+            const doc = await Prompt.find({ userId: slug[0] }).lean();
+            if (!doc) {
+                return NextResponse.json({ error: "Prompt not found." }, { status: 404 });
             }
 
-            if(doc.length === 0){
-                return NextResponse.json({error: "Prompt not found."}, {status: 404});
+            if (doc.length === 0) {
+                return NextResponse.json({ error: "Prompt not found." }, { status: 404 });
             }
 
             const response = doc.map((item) => {
@@ -41,11 +41,36 @@ export async function GET(req:Request, {params}: {params: Promise<Params>} ){
                     })),
                 };
             });
-            
-            return NextResponse.json(response, {status: 200});
+
+            return NextResponse.json(response, { status: 200 });
         }
-        catch(error){
-            return NextResponse.json({error: "Failed to fetch prompt."}, {status: 500});
+        catch (error) {
+            return NextResponse.json({ error: "Failed to fetch prompt." }, { status: 500 });
+        }
+    }
+}
+
+export async function DELETE(req: Request, { params }: { params: Promise<Params> }) {
+    const { slug } = await params;
+
+    if (slug.length === 2) {
+        try {
+            await connectMongo();
+        }
+        catch (error) {
+            return NextResponse.json({ error: "MongoDB connection failed." }, { status: 500 });
+        }
+
+        try {
+            const doc = await Prompt.findOneAndDelete({ userId: slug[0], promptName: slug[1] })
+            if (!doc) {
+                return NextResponse.json({ error: "Prompt not found." }, { status: 404 });
+            }
+
+            return NextResponse.json({ message: "Prompt deleted succesfully." }, { status: 200 });
+        }
+        catch (error) {
+            return NextResponse.json({ error: "Failed to delete prompt." }, { status: 500 })
         }
     }
 
