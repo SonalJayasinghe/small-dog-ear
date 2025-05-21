@@ -11,6 +11,10 @@ export function SiteHeader() {
   const nav = usePathname()
   const routeMap = {
     "/dashboard": "Dashboard",
+    "/projects": "Projects",
+    "/saved-prompts": "Saved Prompts",
+    "/architectures": "Architectures",
+    "/examples": "Examples"
   }
 
   function mapRoute(path:string){  
