@@ -15,8 +15,10 @@ const promptSchema = new Schema({
         ]
     }
   ],
-  userId: String
-});
+  userId: String,
+
+},
+{timestamps: true});
 
 const Prompt = models.Prompt || mongoose.model("Prompt", promptSchema);
 export default Prompt;
