@@ -1,37 +1,79 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { signIn } from "next-auth/react"
-import { useSearchParams} from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useTheme } from "next-themes";
 
 export default function LoginPage() {
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/"
-  const [isLoading, setIsLoading] = useState(false)
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      await signIn("google", { callbackUrl })
+      await signIn("google", { callbackUrl });
     } catch (error) {
-      console.error("Login failed:", error)
+      console.error("Login failed:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
+   const { theme } = useTheme();
+  const [imgSrc, setImgSrc] = useState("/small_dog_logo.png"); // default
+
+  useEffect(() => {
+    if (theme === "dark") {
+      setImgSrc("/small_dog_logo_white.png");
+    } else {
+      setImgSrc("/small_dog_logo.png");
+    }
+  }, [theme]);
+  
   return (
     <div className="flex items-center justify-center md:min-h-screen mb-10 mt-10 md:mt-0 md:mb-0 p-4 ">
-      <Card className="w-full max-w-md h-fit p-4 border-l-2 border-r-2 border-t-2 border-b-6 border-primary">
+      <Card className="w-full max-w-md h-fit p-4 border-1 border-primary">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">Welcome back</CardTitle>
-          <CardDescription className="text-center">Sign in to your account to continue</CardDescription>
+          <div className=" flex w-full justify-center">
+              <Image
+                src={imgSrc}
+                width={80}
+                height={80}
+                alt="logo"
+              />
+          
+          </div>
+          <CardTitle className="text-2xl font-bold text-center">
+            Welcome to Small Dog Ear
+          </CardTitle>
+          <CardDescription className="text-center">
+            Sign in to your account to continue
+          </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
-          <Button variant="outline" onClick={handleGoogleSignIn} disabled={isLoading} className="w-full cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5 mr-2">
+          <Button
+            variant="outline"
+            onClick={handleGoogleSignIn}
+            disabled={isLoading}
+            className="w-full cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              className="w-5 h-5 mr-2"
+            >
               <path
                 fill="#4285F4"
                 d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -60,6 +102,5 @@ export default function LoginPage() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
-

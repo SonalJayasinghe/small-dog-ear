@@ -2,80 +2,94 @@
 
 import * as React from "react";
 import {
-  BookOpenTextIcon,
-  PlusCircle,
-  Save,
-  SquareStackIcon,
-} from "lucide-react";
+  IconDashboard,
+  IconFolder,
+  IconHeart,
+  IconTopologyStar3,
+  IconBook2
+} from "@tabler/icons-react";
 
+import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
-
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import NavLogo from "./nav-logo";
-import { NavPlatform } from "./nav-platform";
-import { usePathname } from "next/navigation"
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 
-// This is sample data.
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  branding: {
-    name: "Small Dog Ear",
-    logo: "/small_dog_logo.png",
-    tagline: "Prompting with Paws",
-  },
-
-  platform: [
+  navMain: [
     {
-      name: "New Prompt",
-      url: "/new-prompt",
-      icon: PlusCircle,
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: IconDashboard,
     },
     {
-      name: "Saved",
-      url: "/saved",
-      icon: Save,
+      title: "Saved Prompts",
+      url: "/saved-prompts",
+      icon: IconHeart,
     },
-  
-     {
-      name: "Projects",
+    {
+      title: "Projects",
       url: "/projects",
-      icon: SquareStackIcon,
+      icon: IconFolder,
     },
-      {
-      name: "Examples",
+     {
+      title: "Architectures",
+      url: "/architectures",
+      icon: IconTopologyStar3,
+    },
+    {
+      title: "Examples",
       url: "/examples",
-      icon: BookOpenTextIcon,
+      icon: IconBook2,
     },
   ],
+  
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { theme } = useTheme();
+  const [logo, setLogo] = useState("/small_dog_logo.png");
 
-    const asPathname = usePathname()
-    console.log("asPathname", asPathname)
+  useEffect(() => {
+    if (theme === "dark") {
+      setLogo("/small_dog_logo_white.png");
+    } else {
+      setLogo("/small_dog_logo.png");
+    }
+  }, [theme]);
 
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <NavLogo branding={data.branding} />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
+            >
+              <a href="/dashboard">
+                <Image src={logo} alt="Logo" width={32} height={32} />
+                <span className="text-base font-semibold">Small Dog Ear</span>
+              </a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavPlatform platform={data.platform} pathName={asPathname}/>
+        <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
-      <SidebarRail />
     </Sidebar>
   );
 }
