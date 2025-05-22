@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -29,7 +29,7 @@ import axios from "axios";
 
 type FormSchema = z.infer<typeof ArchitectureSchema>;
 
-const AddArchitectureForm = () => {
+const AddArchitectureForm = ({ userId }: { userId: string }) => {
   const session = useSession();
 
   const form = useForm<FormSchema>({
@@ -38,9 +38,12 @@ const AddArchitectureForm = () => {
       name: "",
       type: "default",
       sections: [{ section_name: "", section_description: "" }],
-      userId: session.data?.user.id,
     },
   });
+
+  useEffect(() => {
+    form.setValue("userId", userId);
+  },[userId, form])
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -48,6 +51,7 @@ const AddArchitectureForm = () => {
   });
 
   const onSubmit = async (values: FormSchema) => {
+    console.log(values)
     try {
       const response = await axios.post("/api/v1/architecture", values); // replace with your API endpoint
       console.log("Data saved:", response.data);
@@ -83,7 +87,7 @@ const AddArchitectureForm = () => {
             <FormItem>
               <FormLabel>Type</FormLabel>
               <FormControl>
-                <Select>
+                <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger className="w-[180px]" {...field}>
                     <SelectValue placeholder="Select Prompt Type" />
                   </SelectTrigger>
