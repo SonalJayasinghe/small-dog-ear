@@ -1,6 +1,9 @@
 import connectMongo from "@/lib/mongoose";
 import { NextResponse } from "next/server";
 import ArchitectureModel from "@/models/architecture";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
+import { error } from "console";
 
 interface Params {
     slug: string;
@@ -17,35 +20,27 @@ export async function DELETE(req: Request, { params }: { params: Promise<Params>
     const { slug } = await params;
 
     if (slug.length === 1) {
-        try {
-            const doc = await ArchitectureModel.findOneAndDelete({ name: slug[0], type: "default" });
-            if (!doc) {
-                return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
+        const session = await getServerSession(authOptions);
+        if (session?.user) {
+            try {
+                const doc = await ArchitectureModel.findOneAndDelete({ name: slug[0], type: "custom", userId: session?.user.id });
 
+                if (!doc) {
+                    return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
+                }
+                return NextResponse.json({ message: "Architecture deleted successfully." }, { status: 200 });
             }
-            return NextResponse.json({ message: "Architecture deleted successfully." }, { status: 200 });
-
-        }
-        catch (error) {
-            return NextResponse.json({ error: "Failed to delete architecture." }, { status: 500 });
-        }
-    }
-
-    else if (slug.length === 2) {
-        try {
-            const doc = await ArchitectureModel.findOneAndDelete({ name: slug[0], userId: slug[1], type: "custom" });
-            if (!doc) {
-                return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
+            catch (error) {
+                return NextResponse.json({ error: "Failed to delete architecture." }, { status: 500 });
             }
-            return NextResponse.json({ message: "Architecture deleted successfully." }, { status: 200 });
-        }
-        catch (error) {
-            return NextResponse.json({ error: "Failed to delete architecture." }, { status: 500 });
         }
     }
-    else {
-        return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
+    else{
+        return NextResponse.json({error: "Invalid url format."}, {status: 401});
     }
+
+
+
 }
 
 
