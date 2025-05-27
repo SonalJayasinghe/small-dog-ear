@@ -34,20 +34,17 @@ export async function DELETE(req: Request, { params }: { params: Promise<Params>
                 return NextResponse.json({ error: "Failed to delete architecture." }, { status: 500 });
             }
         }
-        else{
-            return NextResponse.json({error: "Unauthorized."}, {status: 401})
+        else {
+            return NextResponse.json({ error: "Unauthorized." }, { status: 401 })
         }
     }
-    else{
-        return NextResponse.json({error: "Invalid url format."}, {status: 400});
+    else {
+        return NextResponse.json({ error: "Invalid url format." }, { status: 400 });
     }
-
-
-
 }
 
 
-export async function GET(req: Request, { params }: { params: Promise<Params> }) {
+export async function GET(req: Request) {
     try {
         await connectMongo();
     }
@@ -55,12 +52,12 @@ export async function GET(req: Request, { params }: { params: Promise<Params> })
         return NextResponse.json({ error: "MongoDB connection failed." }, { status: 500 });
     }
 
-    const { slug } = await params;
-    if (slug.length === 1) {
-        try {
+    try {
+        const session = await getServerSession(authOptions);
+        if (session?.user) {
             const doc = await ArchitectureModel.find({
                 $or: [
-                    { userId: slug[0], type: "custom" },
+                    { userId: session.user.id, type: "custom" },
                     { type: "default" }
                 ]
             })
@@ -76,8 +73,13 @@ export async function GET(req: Request, { params }: { params: Promise<Params> })
             }))
             return NextResponse.json(response, { status: 200 });
         }
-        catch (error) {
-            return NextResponse.json({ error: "Failed to fetch architectures." }, { status: 500 });
+        else{
+            return NextResponse.json({error: "Unauthorized."}, {status: 401})
         }
+
     }
+    catch (error) {
+        return NextResponse.json({ error: "Failed to fetch architectures." }, { status: 500 });
+    }
+
 }
