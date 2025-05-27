@@ -1,8 +1,8 @@
 import connectMongo from "@/lib/mongoose";
 import { ArchitectureSchema } from "@/lib/schema";
-import Architecture from "@/models/architecture";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
+import ArchitectureModel from "@/models/architecture";
 
 export async function POST(req: Request) {
     try {
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
 
     try {
-        const doc = await Architecture.create(parse.data);
+        const doc = await ArchitectureModel.create(parse.data);
         if (!doc) {
             return NextResponse.json({ error: "Failed to create architecture." }, { status: 500 });
         }
@@ -55,7 +55,7 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: "MongoDB connection failed." }, { status: 500 });
     }
 
-    const doc = await Architecture.find({ type: "default" }).sort({ createdAt: -1 }).exec();
+    const doc = await ArchitectureModel.find({ type: "default" }).sort({ createdAt: -1 }).exec();
     if (doc.length === 0) {
         return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
     }
@@ -92,7 +92,7 @@ export async function PUT(req: Request) {
     }
 
     try {
-        const doc = await Architecture.findOneAndUpdate({ name: parse.data.name, type: "custom", userId: parse.data.userId }, parse.data);
+        const doc = await ArchitectureModel.findOneAndUpdate({ name: parse.data.name, type: "custom", userId: parse.data.userId }, parse.data);
         if (!doc) {
             return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
         }

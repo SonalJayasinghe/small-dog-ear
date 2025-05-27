@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"  
 import connectMongo from "@/lib/mongoose";
-import User from "@/models/user";
+import UserModel from "@/models/user";
 
 export async function GET(res: Request) {
   try {
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     const data = await req.json();
     console.log(data);
     await connectMongo();
-const doc = await User.findOne({ _id: data.id }).lean();
+const doc = await UserModel.findOne({ _id: data.id }).lean();
     if (!doc) {
       return NextResponse.json({ message: "User not found." }, { status: 404 });
     }

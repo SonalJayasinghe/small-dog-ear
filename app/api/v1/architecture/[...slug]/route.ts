@@ -1,6 +1,6 @@
 import connectMongo from "@/lib/mongoose";
-import Architecture from "@/models/architecture";
 import { NextResponse } from "next/server";
+import ArchitectureModel from "@/models/architecture";
 
 interface Params {
     slug: string;
@@ -18,7 +18,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<Params>
 
     if (slug.length === 1) {
         try {
-            const doc = await Architecture.findOneAndDelete({ name: slug[0], type: "default" });
+            const doc = await ArchitectureModel.findOneAndDelete({ name: slug[0], type: "default" });
             if (!doc) {
                 return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
 
@@ -33,7 +33,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<Params>
 
     else if (slug.length === 2) {
         try {
-            const doc = await Architecture.findOneAndDelete({ name: slug[0], userId: slug[1], type: "custom" });
+            const doc = await ArchitectureModel.findOneAndDelete({ name: slug[0], userId: slug[1], type: "custom" });
             if (!doc) {
                 return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
             }
@@ -60,7 +60,7 @@ export async function GET(req: Request, { params }: { params: Promise<Params> })
     const { slug } = await params;
     if (slug.length === 1) {
         try {
-            const doc = await Architecture.find({
+            const doc = await ArchitectureModel.find({
                 $or: [
                     { userId: slug[0], type: "custom" },
                     { type: "default" }

@@ -1,6 +1,6 @@
 import connectMongo from "@/lib/mongoose";
-import Prompt from "@/models/prompts";
 import { NextResponse } from "next/server";
+import PromptModel from "@/models/prompts";
 
 interface Params {
     slug: string
@@ -18,7 +18,7 @@ export async function GET(req: Request, { params }: { params: Promise<Params> })
         }
 
         try {
-            const doc = await Prompt.find({ userId: slug[0] }).lean();
+            const doc = await PromptModel.find({ userId: slug[0] }).lean();
             if (!doc) {
                 return NextResponse.json({ error: "Prompt not found." }, { status: 404 });
             }
@@ -63,7 +63,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<Params>
         }
 
         try {
-            const doc = await Prompt.findOneAndDelete({ userId: slug[0], _id: slug[1] })
+            const doc = await PromptModel.findOneAndDelete({ userId: slug[0], _id: slug[1] })
             if (!doc) {
                 return NextResponse.json({ error: "Prompt not found." }, { status: 404 });
             }
