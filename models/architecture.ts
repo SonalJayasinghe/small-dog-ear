@@ -30,6 +30,6 @@ const architecture = new Schema({
 }, 
 {timestamps: true})
 
-const Architecture = mongoose.models.Architecture || mongoose.model("Architecture", architecture);
+const ArchitectureModel = mongoose.models.Architecture || mongoose.model("Architecture", architecture);
 
-export default Architecture;
+export default ArchitectureModel;
