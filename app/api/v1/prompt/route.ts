@@ -1,7 +1,61 @@
+import { authOptions } from "@/lib/authOptions";
 import connectMongo from "@/lib/mongoose";
 import { PromptSchema } from "@/lib/schema";
-import Prompt from "@/models/prompts";
+import PromptModel from "@/models/prompts";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+
+
+export async function GET(req: Request) {
+
+    try {
+        await connectMongo();
+    }
+    catch (error) {
+        return NextResponse.json({ error: "MongoDB connection failed." }, { status: 500 });
+    }
+
+    try {
+        const session = await getServerSession(authOptions);
+        if (session?.user) {
+            const doc = await PromptModel.find({ userId: session.user.id }).lean();
+            if (!doc) {
+                return NextResponse.json({ error: "Prompt not found." }, { status: 404 });
+            }
+
+            if (doc.length === 0) {
+                return NextResponse.json({ error: "Prompt not found." }, { status: 404 });
+            }
+
+            const response = doc.map((item) => {
+                return {
+                    id: item._id,
+                    promptName: item.promptName,
+                    promptDescription: item.promptDescription,
+                    prompt: item.prompt.map((section: { sectionName: string; sectionPrompt: string; subsections: any[]; }) => ({
+                        sectionName: section.sectionName,
+                        sectionPrompt: section.sectionPrompt,
+                        subsections: section.subsections.map((subsection) => ({
+                            subsectionName: subsection.subsectionName,
+                            subsectionPrompt: subsection.subsectionPrompt
+                        }))
+                    })),
+                };
+            });
+
+            return NextResponse.json(response, { status: 200 });
+        }
+
+        else {
+            return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+        }
+    }
+    catch (error) {
+        return NextResponse.json({ error: "Failed to fetch prompt." }, { status: 500 });
+    }
+
+}
+
 
 
 export async function POST(req: Request) {
@@ -21,7 +75,7 @@ export async function POST(req: Request) {
     }
 
     try {
-        const doc = await Prompt.create(parse.data);
+        const doc = await PromptModel.create(parse.data);
         if (!doc) {
             return NextResponse.json({ error: "Failed to create prompt" }, { status: 500 });
         }
@@ -57,7 +111,7 @@ export async function PUT(req: Request) {
     }
 
     try {
-        const doc = await Prompt.findByIdAndUpdate(data.id, parse.data);
+        const doc = await PromptModel.findByIdAndUpdate(data.id, parse.data);
         if (!doc) {
             return NextResponse.json({ error: "Prompt not found." }, { status: 404 });
         }
