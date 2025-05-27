@@ -3,6 +3,8 @@ import { ArchitectureSchema } from "@/lib/schema";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import ArchitectureModel from "@/models/architecture";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 export async function POST(req: Request) {
     try {
@@ -47,6 +49,8 @@ export async function POST(req: Request) {
 }
 
 
+
+
 export async function GET(req: Request) {
     try {
         await connectMongo();
@@ -55,18 +59,36 @@ export async function GET(req: Request) {
         return NextResponse.json({ error: "MongoDB connection failed." }, { status: 500 });
     }
 
-    const doc = await ArchitectureModel.find({ type: "default" }).sort({ createdAt: -1 }).exec();
-    if (doc.length === 0) {
-        return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
+    try {
+        const session = await getServerSession(authOptions);
+        if (session?.user) {
+            const doc = await ArchitectureModel.find({
+                $or: [
+                    { userId: session.user.id, type: "custom" },
+                    { type: "default" }
+                ]
+            })
+            if (doc.length === 0) {
+                return NextResponse.json({ error: "Architectures not found." }, { status: 404 });
+            }
+
+            const response = doc.map((item) => ({
+                name: item.name,
+                sections: item.sections,
+                type: item.type,
+
+            }))
+            return NextResponse.json(response, { status: 200 });
+        }
+        else{
+            return NextResponse.json({error: "Unauthorized."}, {status: 401})
+        }
+
+    }
+    catch (error) {
+        return NextResponse.json({ error: "Failed to fetch architectures." }, { status: 500 });
     }
 
-    const response = doc.map((item) => ({
-        name: item.name,
-        sections: item.sections,
-        type: item.type,
-    }))
-
-    return NextResponse.json(response, { status: 200 });
 }
 
 
