@@ -30,8 +30,6 @@ import axios from "axios";
 type FormSchema = z.infer<typeof ArchitectureSchema>;
 
 const AddArchitectureForm = () => {
-  const session = useSession();
-
   const form = useForm<FormSchema>({
     resolver: zodResolver(ArchitectureSchema),
     defaultValues: {
