@@ -80,8 +80,8 @@ export async function GET(req: Request) {
             }))
             return NextResponse.json(response, { status: 200 });
         }
-        else{
-            return NextResponse.json({error: "Unauthorized."}, {status: 401})
+        else {
+            return NextResponse.json({ error: "Unauthorized." }, { status: 401 })
         }
 
     }
@@ -114,11 +114,18 @@ export async function PUT(req: Request) {
     }
 
     try {
-        const doc = await ArchitectureModel.findOneAndUpdate({ name: parse.data.name, type: "custom", userId: parse.data.userId }, parse.data);
-        if (!doc) {
-            return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
+        const session = await getServerSession(authOptions);
+        if (session?.user) {
+            const doc = await ArchitectureModel.findOneAndUpdate({ name: parse.data.name, type: "custom", userId: session.user.id }, parse.data);
+            if (!doc) {
+                return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
+            }
+            return NextResponse.json({ message: "Architecture updated successfully." }, { status: 200 });
         }
-        return NextResponse.json({ message: "Architecture updated successfully." }, { status: 200 });
+        else {
+            return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+        }
+
     }
     catch (error: any) {
         if (error.code === 11000) {
