@@ -34,9 +34,12 @@ export async function DELETE(req: Request, { params }: { params: Promise<Params>
                 return NextResponse.json({ error: "Failed to delete architecture." }, { status: 500 });
             }
         }
+        else{
+            return NextResponse.json({error: "Unauthorized."}, {status: 401})
+        }
     }
     else{
-        return NextResponse.json({error: "Invalid url format."}, {status: 401});
+        return NextResponse.json({error: "Invalid url format."}, {status: 400});
     }
 
 
