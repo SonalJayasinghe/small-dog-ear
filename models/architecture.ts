@@ -9,6 +9,10 @@ const architecture = new Schema({
         index: true
     },
 
+    description:{
+        type:String,
+    },
+
     sections: [
         {
             section_name: {

@@ -23,27 +23,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { ArchitectureSchema } from "@/lib/schema";
-import { useSession } from "next-auth/react";
 import { IconPlus, IconX } from "@tabler/icons-react";
 import axios from "axios";
 
 type FormSchema = z.infer<typeof ArchitectureSchema>;
 
-const AddArchitectureForm = ({ userId }: { userId: string }) => {
-  const session = useSession();
-
+const AddArchitectureForm = ({onAdd}: {onAdd: ()=>void}) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(ArchitectureSchema),
     defaultValues: {
       name: "",
+      description: "",
       type: "default",
       sections: [{ section_name: "", section_description: "" }],
     },
   });
-
-  useEffect(() => {
-    form.setValue("userId", userId);
-  },[userId, form])
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -51,11 +45,12 @@ const AddArchitectureForm = ({ userId }: { userId: string }) => {
   });
 
   const onSubmit = async (values: FormSchema) => {
-    console.log(values)
+    console.log(values);
     try {
-      const response = await axios.post("/api/v1/architecture", values); // replace with your API endpoint
+      const response = await axios.post("/api/v1/architecture", values);
       console.log("Data saved:", response.data);
       toast("Architecture saved successfully!");
+      onAdd();
       form.reset();
     } catch (error) {
       console.error("Save failed:", error);
@@ -72,6 +67,20 @@ const AddArchitectureForm = ({ userId }: { userId: string }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>

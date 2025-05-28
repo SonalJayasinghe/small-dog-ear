@@ -1,5 +1,5 @@
 import connectMongo from "@/lib/mongoose";
-import { ArchitectureSchema } from "@/lib/schema";
+import { Architecture, ArchitectureSchema } from "@/lib/schema";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 import ArchitectureModel from "@/models/architecture";
@@ -28,9 +28,28 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: parse.error }, { status: 400 });
     }
 
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    let saveData;
+
+    if (parse.data.type === "default") {
+        saveData = {
+            ...parse.data,
+        }
+    }
+    else {
+        saveData = {
+            ...parse.data,
+            userId: session.user.id
+        }
+    }
+
 
     try {
-        const doc = await ArchitectureModel.create(parse.data);
+        const doc = await ArchitectureModel.create(saveData);
         if (!doc) {
             return NextResponse.json({ error: "Failed to create architecture." }, { status: 500 });
         }
@@ -72,8 +91,9 @@ export async function GET(req: Request) {
                 return NextResponse.json({ error: "Architectures not found." }, { status: 404 });
             }
 
-            const response = doc.map((item) => ({
+            const response = doc.map((item: Architecture) => ({
                 name: item.name,
+                description: item.description,
                 sections: item.sections,
                 type: item.type,
 
