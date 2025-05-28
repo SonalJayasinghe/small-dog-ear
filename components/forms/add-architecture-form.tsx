@@ -23,13 +23,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { ArchitectureSchema } from "@/lib/schema";
-import { useSession } from "next-auth/react";
 import { IconPlus, IconX } from "@tabler/icons-react";
 import axios from "axios";
 
 type FormSchema = z.infer<typeof ArchitectureSchema>;
 
-const AddArchitectureForm = () => {
+const AddArchitectureForm = ({onAdd}: {onAdd: ()=>void}) => {
   const form = useForm<FormSchema>({
     resolver: zodResolver(ArchitectureSchema),
     defaultValues: {
@@ -51,6 +50,7 @@ const AddArchitectureForm = () => {
       const response = await axios.post("/api/v1/architecture", values);
       console.log("Data saved:", response.data);
       toast("Architecture saved successfully!");
+      onAdd();
       form.reset();
     } catch (error) {
       console.error("Save failed:", error);
