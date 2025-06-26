@@ -183,20 +183,21 @@ const AddArchitectureForm = () => {
 
         <div className=" flex gap-2">
           <AlertDialog>
-            <AlertDialogTrigger>
-              <Button
-                type="reset"
-                variant={"outline"}
-                className=" cursor-pointer"
-              >
-                Reset
-              </Button>
+            <AlertDialogTrigger asChild>
+                <Button
+                  type="reset"
+                  variant={"outline"}
+                  className=" cursor-pointer"
+                >
+                  Reset
+                </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  This action cannot be undone. This will reset what you entered.
+                  This action cannot be undone. This will reset what you
+                  entered.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
