@@ -1,18 +1,25 @@
+"use client"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardDescription,
-  CardTitle,
-  CardAction,
-} from "@/components/ui/card";
 import { Architecture } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 import { IconTrash } from "@tabler/icons-react";
+import axios from "axios";
 import React from "react";
+import { toast } from "sonner";
 
-const ArchitectureCard = ({ data }: { data: Architecture }) => {
+const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () => void;}) => {
   return (
     <>
       <div
@@ -34,7 +41,50 @@ const ArchitectureCard = ({ data }: { data: Architecture }) => {
           <Badge variant={"outline"} className="font-light">
             {data.type.charAt(0).toUpperCase() + data.type.slice(1)}
           </Badge>
-          {data.type === 'custom' && <Button className="w-6 h-6" variant={"destructive"}> <IconTrash/> </Button>}
+          {data.type === "custom" && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  className="w-6 h-6 cursor-pointer hover:scale-110"
+                  variant={"destructive"}
+                >
+                  {" "}
+                  <IconTrash />{" "}
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. Once delete you cannot recover
+                    the deleted architecture.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className=" cursor-pointer">
+                    Cancel
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 cursor-pointer"
+                    onClick={() => {
+                      axios
+                        .delete(`/api/v1/architecture/${data.name}`)
+                        .then((res) => {
+                          toast("Deleted successfully");
+                          onDelete();
+                        })
+                        .catch((err) => {
+                          console.log(err)
+                          toast("Something went wrong");
+                        });
+                    }}
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
       </div>
     </>
