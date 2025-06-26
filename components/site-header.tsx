@@ -14,7 +14,8 @@ export function SiteHeader() {
     "/projects": "Projects",
     "/saved-prompts": "Saved Prompts",
     "/architectures": "Architectures",
-    "/examples": "Examples"
+    "/examples": "Examples",
+    "/architectures/add-new": "Add New Architecture"
   }
 
   function mapRoute(path:string){  
