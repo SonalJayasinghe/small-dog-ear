@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -25,10 +26,15 @@ import { toast } from "sonner";
 import { ArchitectureSchema } from "@/lib/schema";
 import { IconPlus, IconX } from "@tabler/icons-react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type FormSchema = z.infer<typeof ArchitectureSchema>;
 
-const AddArchitectureForm = ({onAdd}: {onAdd: ()=>void}) => {
+
+
+const AddArchitectureForm = () => {
+
+  const router = useRouter();
   const form = useForm<FormSchema>({
     resolver: zodResolver(ArchitectureSchema),
     defaultValues: {
@@ -50,8 +56,8 @@ const AddArchitectureForm = ({onAdd}: {onAdd: ()=>void}) => {
       const response = await axios.post("/api/v1/architecture", values);
       console.log("Data saved:", response.data);
       toast("Architecture saved successfully!");
-      onAdd();
       form.reset();
+      router.push("/architectures");
     } catch (error) {
       console.error("Save failed:", error);
       toast("Error saving architecture.");
