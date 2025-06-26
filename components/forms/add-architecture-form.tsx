@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -25,10 +26,24 @@ import { toast } from "sonner";
 import { ArchitectureSchema } from "@/lib/schema";
 import { IconPlus, IconX } from "@tabler/icons-react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 type FormSchema = z.infer<typeof ArchitectureSchema>;
 
-const AddArchitectureForm = ({onAdd}: {onAdd: ()=>void}) => {
+const AddArchitectureForm = () => {
+  const router = useRouter();
   const form = useForm<FormSchema>({
     resolver: zodResolver(ArchitectureSchema),
     defaultValues: {
@@ -50,8 +65,8 @@ const AddArchitectureForm = ({onAdd}: {onAdd: ()=>void}) => {
       const response = await axios.post("/api/v1/architecture", values);
       console.log("Data saved:", response.data);
       toast("Architecture saved successfully!");
-      onAdd();
       form.reset();
+      router.push("/architectures");
     } catch (error) {
       console.error("Save failed:", error);
       toast("Error saving architecture.");
@@ -151,24 +166,48 @@ const AddArchitectureForm = ({onAdd}: {onAdd: ()=>void}) => {
           </div>
         ))}
 
-        <Button
-          type="button"
-          variant={"secondary"}
-          className=" cursor-pointer"
-          onClick={() => append({ section_name: "", section_description: "" })}
-        >
-          <IconPlus /> Add Section
-        </Button>
-        <div className=" flex gap-2">
-          <Button
-            type="reset"
-            variant={"outline"}
-            className=" cursor-pointer"
-            onClick={() => form.reset()}
+        <div className="w-full">
+          <div
+            onClick={() =>
+              append({ section_name: "", section_description: "" })
+            }
+            className="border-2 border-dashed border-gray-400 rounded-sm p-2 flex items-center justify-center cursor-pointer h-full hover:bg-gray-50"
           >
-            Reset
-          </Button>
+            <div className="text-center">
+              <p className="text-md font-semibold text-gray-600">
+                + Add New Section
+              </p>
+            </div>
+          </div>
+        </div>
 
+        <div className=" flex gap-2">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <Button
+                  type="reset"
+                  variant={"outline"}
+                  className=" cursor-pointer"
+                >
+                  Reset
+                </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will reset what you
+                  entered.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => form.reset()}>
+                  Reset
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Button type="submit" className=" cursor-pointer">
             Submit
           </Button>
