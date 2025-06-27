@@ -50,7 +50,7 @@ export default function Page() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Architecture</BreadcrumbPage>
+              <BreadcrumbPage>Architectures</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
