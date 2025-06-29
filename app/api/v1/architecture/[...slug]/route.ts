@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import ArchitectureModel from "@/models/architecture";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
-import { error } from "console";
 
 interface Params {
     slug: string;
