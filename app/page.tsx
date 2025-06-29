@@ -8,7 +8,7 @@ export default function Home() {
 
   useEffect(() => {
     route.push("/dashboard");
-  }, []);
+  });
 
   return (
     <>

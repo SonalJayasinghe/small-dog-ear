@@ -174,7 +174,7 @@ const AddArchitectureForm = () => {
             className="border-2 border-dashed border-gray-400 rounded-sm p-2 flex items-center justify-center cursor-pointer h-full hover:bg-gray-50"
           >
             <div className="text-center">
-              <p className="text-md font-semibold text-gray-600">
+              <p className="text-md font-semibold text-gray-400">
                 + Add New Section
               </p>
             </div>
