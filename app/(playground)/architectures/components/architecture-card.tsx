@@ -23,9 +23,9 @@ import { toast } from "sonner";
 const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () => void;}) => {
   return (
     <>
-      {/* <div
+      <div
         className={cn(
-          "bg-card text-card-foreground flex flex-col gap-3 rounded-xl border py-4 px-4 shadow-sm h-full  cursor-pointer"
+          "bg-card text-card-foreground flex flex-col gap-3 rounded-xl border justify-between py-4 px-4 shadow-sm h-full  cursor-pointer"
         )}
       >
         <div className=" flex w-full">
@@ -33,12 +33,12 @@ const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () =>
             {data.name}
           </p>
         </div>
-        <div className="w-full flex items-start">
+        <div className="h-full w-full flex items-start">
           <p className=" text-muted-foreground text-sm line-clamp-3">
             {data.description}
           </p>
         </div>
-        <div className=" flex w-full justify-between items-end">
+              <div className=" flex w-full justify-between items-end">
           <Badge variant={"outline"} className="font-light">
             {data.type.charAt(0).toUpperCase() + data.type.slice(1)}
           </Badge>
@@ -87,31 +87,8 @@ const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () =>
             </AlertDialog>
           )}
         </div>
-      </div> */}
-
-
-            <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,250.00
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Visitors for the last 6 months
-          </div>
-        </CardFooter>
-      </Card>
+      </div>
+      
     </>
   );
 };
