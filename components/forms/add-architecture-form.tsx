@@ -171,7 +171,7 @@ const AddArchitectureForm = () => {
             onClick={() =>
               append({ section_name: "", section_description: "" })
             }
-            className="border-2 border-dashed border-gray-400 rounded-sm p-2 flex items-center justify-center cursor-pointer h-full hover:bg-gray-50"
+            className="border-2 border-dashed border-gray-400 rounded-sm p-2 flex items-center justify-center cursor-pointer h-full hover:bg-gray-50 dark:hover:bg-card"
           >
             <div className="text-center">
               <p className="text-md font-semibold text-gray-400">
