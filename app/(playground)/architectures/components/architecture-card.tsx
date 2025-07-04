@@ -46,7 +46,7 @@ const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () =>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
-                  className="w-6 h-6 cursor-pointer hover:scale-110"
+                  className="w-8 h-8 cursor-pointer hover:scale-110"
                   variant={"destructive"}
                   onClick={(e) => e.stopPropagation()}
                 >

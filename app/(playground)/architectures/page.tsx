@@ -86,7 +86,7 @@ export default function Page() {
                   onClick={() => {
                     router.push("/architectures/add-new");
                   }}
-                  className="border-2 border-dashed border-gray-400 rounded-xl p-6 flex items-center justify-center cursor-pointer h-full hover:bg-gray-50"
+                  className="border-2 border-dashed border-gray-400 rounded-xl p-6 flex items-center justify-center cursor-pointer h-full hover:bg-gray-50 dark:hover:bg-card"
                 >
                   <div className="text-center">
                     <p className="text-lg font-semibold text-gray-400">
