@@ -42,11 +42,12 @@ import {
 
 type FormSchema = z.infer<typeof ArchitectureSchema>;
 
-const AddArchitectureForm = () => {
+const AddArchitectureForm = ({ initialData }: { initialData?: FormSchema }) => {
   const router = useRouter();
+
   const form = useForm<FormSchema>({
     resolver: zodResolver(ArchitectureSchema),
-    defaultValues: {
+    defaultValues: initialData ?? {
       name: "",
       description: "",
       type: "default",
@@ -60,11 +61,17 @@ const AddArchitectureForm = () => {
   });
 
   const onSubmit = async (values: FormSchema) => {
-    console.log(values);
+    
     try {
+      if(initialData){
+        const response = await axios.put("/api/v1/architecture", values);
+        toast("Architecture updated successfully!");
+      }
+      else{
       const response = await axios.post("/api/v1/architecture", values);
-      console.log("Data saved:", response.data);
       toast("Architecture saved successfully!");
+      }
+      
       form.reset();
       router.push("/architectures");
     } catch (error) {
