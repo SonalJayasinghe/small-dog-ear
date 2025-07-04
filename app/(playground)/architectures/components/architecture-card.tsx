@@ -48,6 +48,7 @@ const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () =>
                 <Button
                   className="w-6 h-6 cursor-pointer hover:scale-110"
                   variant={"destructive"}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   {" "}
                   <IconTrash />{" "}
