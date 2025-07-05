@@ -216,7 +216,7 @@ const AddArchitectureForm = ({ initialData }: { initialData?: FormSchema }) => {
             </AlertDialogContent>
           </AlertDialog>
           <Button type="submit" className=" cursor-pointer">
-            Submit
+            {initialData ? "Update" : "Submit"}
           </Button>
         </div>
       </form>
