@@ -15,12 +15,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardDescription, CardTitle, CardAction, CardFooter } from "@/components/ui/card";
 import { Architecture } from "@/lib/schema";
 import { cn } from "@/lib/utils";
-import { IconTrash, IconTrendingUp } from "@tabler/icons-react";
+import { IconEdit, IconTrash, IconTrendingUp } from "@tabler/icons-react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "sonner";
 
 const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () => void;}) => {
+  const router = useRouter()
   return (
     <>
       <div
@@ -42,6 +44,19 @@ const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () =>
           <Badge variant={"outline"} className="font-light">
             {data.type.charAt(0).toUpperCase() + data.type.slice(1)}
           </Badge>
+
+<div className=" flex gap-2">
+                  <Button
+                  className="w-8 h-8 cursor-pointer hover:scale-110"
+                  variant={"outline"}
+                  onClick={(e) => {e.stopPropagation() 
+                    router.push(`/architectures/edit/${data.name}`)
+                  }}
+                >
+                  {" "}
+                  <IconEdit />{" "}
+                </Button>
+
           {data.type === "custom" && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -70,7 +85,7 @@ const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () =>
                     className="bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 cursor-pointer"
                     onClick={() => {
                       axios
-                        .delete(`/api/v1/architecture/${data.name}`)
+                        .delete(`/api/v1/architecture/${data._id}`)
                         .then((res) => {
                           toast("Deleted successfully");
                           onDelete();
@@ -86,7 +101,9 @@ const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () =>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+            
           )}
+          </div>
         </div>
       </div>
       
