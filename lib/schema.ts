@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const ArchitectureSchema = z.object({
+    _id: z.string().optional(),
     name: z.string().min(1).max(50),
     description: z.string().optional(),
     sections: z.array(
@@ -17,6 +18,7 @@ export type Architecture = z.infer<typeof ArchitectureSchema>;
 
 
 export const PromptSchema = z.object({
+    _id: z.string().optional(),
     promptName: z.string().min(1).max(50),
     promptDescription: z.string().min(1).max(200).optional(),
     prompt: z.array(
