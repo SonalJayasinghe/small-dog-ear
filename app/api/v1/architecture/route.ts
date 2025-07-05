@@ -118,7 +118,7 @@ export async function PUT(req: Request) {
         await connectMongo();
     }
     catch (error) {
-        return NextResponse.json({ error: "MongoDB connection failed." }, { status: 500 });
+        return NextResponse.json({ error: "Failed to connect to the database. Please try again later." }, { status: 500 });
     }
 
     let body: any;
@@ -126,7 +126,7 @@ export async function PUT(req: Request) {
         body = await req.json();
     }
     catch (error) {
-        return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+        return NextResponse.json({ error: "Invalid request format." }, { status: 400 });
     }
 
     const parse = ArchitectureSchema.safeParse(body);
@@ -139,18 +139,18 @@ export async function PUT(req: Request) {
         if (session?.user) {
             const doc = await ArchitectureModel.findOneAndUpdate({ _id: parse.data._id, type: "custom", userId: session.user.id }, parse.data);
             if (!doc) {
-                return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
+                return NextResponse.json({ error: "No matching architecture found to update." }, { status: 404 });
             }
             return NextResponse.json({ message: "Architecture updated successfully." }, { status: 200 });
         }
         else {
-            return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+            return NextResponse.json({ error: "You must be signed in to update architectures." }, { status: 401 });
         }
 
     }
     catch (error: any) {
         if (error.code === 11000) {
-            return NextResponse.json({ error: "Architecture already exists" }, { status: 409 });
+            return NextResponse.json({ error: "An architecture with this name already exists." }, { status: 409 });
         }
 
         if (error instanceof mongoose.Error.ValidationError) {

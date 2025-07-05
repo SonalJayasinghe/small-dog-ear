@@ -25,7 +25,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { ArchitectureSchema } from "@/lib/schema";
 import { IconPlus, IconX } from "@tabler/icons-react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
 import {
@@ -74,9 +74,10 @@ const AddArchitectureForm = ({ initialData }: { initialData?: FormSchema }) => {
       
       form.reset();
       router.push("/architectures");
-    } catch (error) {
-      console.error("Save failed:", error);
-      toast("Error saving architecture.");
+    } catch (err) {
+      const error = err as AxiosError
+      const errorMessage = (error.response?.data as { error?: string })?.error;
+      toast(errorMessage);
     }
   };
 
