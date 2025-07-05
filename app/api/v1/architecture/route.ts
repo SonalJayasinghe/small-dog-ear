@@ -92,6 +92,7 @@ export async function GET(req: Request) {
             }
 
             const response = doc.map((item: Architecture) => ({
+                _id: item._id,
                 name: item.name,
                 description: item.description,
                 sections: item.sections,
@@ -136,7 +137,7 @@ export async function PUT(req: Request) {
     try {
         const session = await getServerSession(authOptions);
         if (session?.user) {
-            const doc = await ArchitectureModel.findOneAndUpdate({ name: parse.data.name, type: "custom", userId: session.user.id }, parse.data);
+            const doc = await ArchitectureModel.findOneAndUpdate({ _id: parse.data._id, type: "custom", userId: session.user.id }, parse.data);
             if (!doc) {
                 return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
             }
