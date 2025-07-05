@@ -58,7 +58,7 @@ export async function GET(req: Request, { params }: { params: Promise<Params> })
         const session = await getServerSession(authOptions);
         if (session?.user) {
             try {
-                const doc = await ArchitectureModel.findOne({ name: slug[0], type: "custom", userId: session?.user.id });
+                const doc = await ArchitectureModel.findOne({ name: slug[0] });
 
                 if (!doc) {
                     return NextResponse.json({ error: "Architecture not found." }, { status: 404 });
