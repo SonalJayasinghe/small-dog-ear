@@ -12,9 +12,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardDescription, CardTitle, CardAction, CardFooter } from "@/components/ui/card";
 import { Architecture } from "@/lib/schema";
 import { cn } from "@/lib/utils";
-import { IconTrash } from "@tabler/icons-react";
+import { IconTrash, IconTrendingUp } from "@tabler/icons-react";
 import axios from "axios";
 import React from "react";
 import { toast } from "sonner";
@@ -24,7 +25,7 @@ const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () =>
     <>
       <div
         className={cn(
-          "bg-card text-card-foreground flex flex-col gap-3 rounded-xl border py-4 px-4 shadow-sm h-full justify-between cursor-pointer"
+          "bg-card text-card-foreground flex flex-col gap-3 rounded-xl border justify-between py-4 px-4 shadow-sm h-full  cursor-pointer"
         )}
       >
         <div className=" flex w-full">
@@ -32,12 +33,12 @@ const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () =>
             {data.name}
           </p>
         </div>
-        <div className="w-full flex">
+        <div className="h-full w-full flex items-start">
           <p className=" text-muted-foreground text-sm line-clamp-3">
             {data.description}
           </p>
         </div>
-        <div className=" flex w-full justify-between items-end">
+              <div className=" flex w-full justify-between items-end">
           <Badge variant={"outline"} className="font-light">
             {data.type.charAt(0).toUpperCase() + data.type.slice(1)}
           </Badge>
@@ -45,8 +46,9 @@ const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () =>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
-                  className="w-6 h-6 cursor-pointer hover:scale-110"
+                  className="w-8 h-8 cursor-pointer hover:scale-110"
                   variant={"destructive"}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   {" "}
                   <IconTrash />{" "}
@@ -87,6 +89,7 @@ const ArchitectureCard = ({data,onDelete,}: {data: Architecture, onDelete: () =>
           )}
         </div>
       </div>
+      
     </>
   );
 };

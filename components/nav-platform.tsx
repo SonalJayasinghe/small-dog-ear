@@ -8,6 +8,9 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
+import { type Icon } from "@tabler/icons-react";
+
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,9 +34,9 @@ export function NavPlatform({
   pathName,
 }: {
   platform: {
-    name: string
+    title: string
     url: string
-    icon: LucideIcon
+    icon: Icon
   }[],
   pathName: string
 }) {
@@ -44,11 +47,11 @@ export function NavPlatform({
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {platform.map((item) => (
-          <SidebarMenuItem key={item.name}>
+          <SidebarMenuItem key={item.title}>
             <SidebarMenuButton asChild isActive={pathName === item.url}> 
               <a href={item.url}>
                 <item.icon />
-                <span>{item.name}</span>
+                <span>{item.title}</span>
               </a>
             </SidebarMenuButton>
             

@@ -23,6 +23,7 @@ import {
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { NavPlatform } from "./nav-platform";
 
 const data = {
   navMain: [

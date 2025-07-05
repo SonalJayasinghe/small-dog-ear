@@ -74,43 +74,29 @@ export default function Page() {
         {loading ? (
           <Spinenr />
         ) : (
-          <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 pt-2">
-            {architectures.map((data: Architecture, index: number) => (
-              <Dialog key={index}>
-                <DialogTrigger asChild>
-                  <div className="w-full">
-                    <ArchitectureCard
-                      data={data}
-                      onDelete={fetchArchitectures}
-                    />
+          <>
+            <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
+              {architectures.map((data: Architecture, index: number) => (
+                <div key={index} onClick={()=> console.log(data)}>
+                  <ArchitectureCard data={data} onDelete={fetchArchitectures} />
+                </div>
+              ))}
+              <div className="w-full">
+                <div
+                  onClick={() => {
+                    router.push("/architectures/add-new");
+                  }}
+                  className="border-2 border-dashed border-gray-400 rounded-xl p-6 flex items-center justify-center cursor-pointer h-full hover:bg-gray-50 dark:hover:bg-card"
+                >
+                  <div className="text-center">
+                    <p className="text-lg font-semibold text-gray-400">
+                      + Add New Architecture
+                    </p>
                   </div>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>{data.name}</DialogTitle>
-                    <DialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      your account and remove your data from our servers.
-                    </DialogDescription>
-                  </DialogHeader>
-                </DialogContent>
-              </Dialog>
-            ))}
-            <div className="w-full">
-              <div
-                onClick={() => {
-                  router.push("/architectures/add-new");
-                }}
-                className="border-2 border-dashed border-gray-400 rounded-xl p-6 flex items-center justify-center cursor-pointer h-full hover:bg-gray-50"
-              >
-                <div className="text-center">
-                  <p className="text-lg font-semibold text-gray-400">
-                    + Add New Architecture
-                  </p>
                 </div>
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>
