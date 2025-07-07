@@ -6,7 +6,13 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import axios from "axios";
 import { Architecture } from "@/lib/schema";
 import { useTheme } from "next-themes";
@@ -16,10 +22,10 @@ export default function PromptBuilder() {
   const [selectedArchId, setSelectedArchId] = useState<string>("none");
   const [language, setLanguage] = useState("python");
   const [description, setDescription] = useState("");
-  const [sectionPrompts, setSectionPrompts] = useState<Record<string, string>>({});
-  const {theme} = useTheme();
-
-  
+  const [sectionPrompts, setSectionPrompts] = useState<Record<string, string>>(
+    {}
+  );
+  const { theme } = useTheme();
 
   useEffect(() => {
     axios.get("/api/v1/architecture").then((res) => {
@@ -27,7 +33,9 @@ export default function PromptBuilder() {
     });
   }, []);
 
-  const selectedArchitecture = architectures.find((a) => a._id === selectedArchId);
+  const selectedArchitecture = architectures.find(
+    (a) => a._id === selectedArchId
+  );
 
   const handleSectionChange = (sectionName: string, value: string) => {
     setSectionPrompts((prev) => ({ ...prev, [sectionName]: value }));
@@ -50,7 +58,7 @@ export default function PromptBuilder() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label>Select Architecture</Label>
+              <Label className="mb-2">Select Architecture</Label>
               <Select value={selectedArchId} onValueChange={setSelectedArchId}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Architecture" />
@@ -58,28 +66,30 @@ export default function PromptBuilder() {
                 <SelectContent>
                   <SelectItem value="none">No Architecture</SelectItem>
                   {architectures.map((arch) => (
-                    <SelectItem key={arch._id} value={arch._id!}>{arch.name}</SelectItem>
+                    <SelectItem key={arch._id} value={arch._id!}>
+                      {arch.name}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            <div>
-              <Label>Select Language</Label>
+            <div className="">
+              <Label className="mb-2">Select Language</Label>
               <Select value={language} onValueChange={setLanguage}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Language" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="python">Python</SelectItem>
-                  <SelectItem value="typescript">TypeScript</SelectItem>
+                  {/* <SelectItem value="typescript">TypeScript</SelectItem> */}
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div>
-            <Label>Description</Label>
+            <Label className="mb-2">Description</Label>
             <Textarea
               placeholder="Brief description of what this prompt does..."
               value={description}
@@ -91,17 +101,21 @@ export default function PromptBuilder() {
             <div className="space-y-6">
               {selectedArchitecture.sections.map((section) => (
                 <div key={section.section_name}>
-                  <Label>{section.section_name}</Label>
+                  <Label className="mb-2">{section.section_name}</Label>
                   {section.section_description && (
-                    <p className="text-muted-foreground text-sm mb-2">{section.section_description}</p>
+                    <p className="text-muted-foreground text-sm mb-2">
+                      {section.section_description}
+                    </p>
                   )}
                   <div className="h-[250px] border rounded-md overflow-hidden">
                     <Editor
                       height="100%"
                       language={language}
                       value={sectionPrompts[section.section_name] || ""}
-                      onChange={(value) => handleSectionChange(section.section_name, value || "")}
-                      theme="vs-light"
+                      onChange={(value) =>
+                        handleSectionChange(section.section_name, value || "")
+                      }
+                      theme={theme === "dark" ? "vs-dark" : "vs-light"}
                     />
                   </div>
                 </div>
@@ -111,14 +125,17 @@ export default function PromptBuilder() {
 
           {!selectedArchitecture && (
             <div>
-              <Label>Write Prompt</Label>
+              <Label className="mb-2">Write Prompt</Label>
               <div className="h-[300px] border rounded-md overflow-hidden">
                 <Editor
+                  defaultValue={`prompt = """ Enter Your Prompt Here """`}
                   height="100%"
                   language={language}
                   value={sectionPrompts["default"] || ""}
-                  onChange={(value) => handleSectionChange("default", value || "")}
-                  theme={theme === 'dark' ? "vs-dark" : "vs-light"}
+                  onChange={(value) =>
+                    handleSectionChange("default", value || "")
+                  }
+                  theme={theme === "dark" ? "vs-dark" : "vs-light"}
                 />
               </div>
             </div>
