@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import axios from "axios";
 import { Architecture } from "@/lib/schema";
+import { useTheme } from "next-themes";
 
 export default function PromptBuilder() {
   const [architectures, setArchitectures] = useState<Architecture[]>([]);
@@ -16,6 +17,9 @@ export default function PromptBuilder() {
   const [language, setLanguage] = useState("python");
   const [description, setDescription] = useState("");
   const [sectionPrompts, setSectionPrompts] = useState<Record<string, string>>({});
+  const {theme} = useTheme();
+
+  
 
   useEffect(() => {
     axios.get("/api/v1/architecture").then((res) => {
@@ -114,7 +118,7 @@ export default function PromptBuilder() {
                   language={language}
                   value={sectionPrompts["default"] || ""}
                   onChange={(value) => handleSectionChange("default", value || "")}
-                  theme="vs-dark"
+                  theme={theme === 'dark' ? "vs-dark" : "vs-light"}
                 />
               </div>
             </div>
