@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,15 +16,17 @@ import {
 import axios from "axios";
 import { Architecture } from "@/lib/schema";
 import { useTheme } from "next-themes";
+import { Input } from "@/components/ui/input";
 
 export default function PromptBuilder() {
   const [architectures, setArchitectures] = useState<Architecture[]>([]);
   const [selectedArchId, setSelectedArchId] = useState<string>("none");
+  const [prompt, setPrompt] = useState("");
   const [language, setLanguage] = useState("python");
+  const [modelType, setModelType] = useState("gpt-4");
+  const [promptType] = useState("text-generation"); // fixed
+  const [title, setTitle] = useState("Untitled Prompt");
   const [description, setDescription] = useState("");
-  const [sectionPrompts, setSectionPrompts] = useState<Record<string, string>>(
-    {}
-  );
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -33,33 +35,70 @@ export default function PromptBuilder() {
     });
   }, []);
 
+  
+
   const selectedArchitecture = architectures.find(
     (a) => a._id === selectedArchId
   );
 
-  const handleSectionChange = (sectionName: string, value: string) => {
-    setSectionPrompts((prev) => ({ ...prev, [sectionName]: value }));
+  const handleArchitectureChange = (newId: string) => {
+    if (selectedArchId !== "none" && newId !== selectedArchId) {
+      const confirmChange = confirm(
+        "Changing the architecture will clear your current prompt. Proceed?"
+      );
+      if (!confirmChange) return;
+      setPrompt(defaultPrompt);
+    }
+    setSelectedArchId(newId);
   };
 
   const handleSave = () => {
     const promptData = {
-      promptName: "Untitled Prompt",
+      promptName: title,
       promptDescription: description,
-      architecture: selectedArchitecture?.name || "None",
+      promptType,
+      modelType,
       language,
-      promptSections: sectionPrompts,
+      architecture: selectedArchitecture?.name || "None",
+      promptContent: prompt,
     };
     console.log("Prompt Saved:", promptData);
   };
+
+    const defaultPrompt = `""" 
+ Template
+Enter your instructions here...
+"""`;
 
   return (
     <div className="p-2">
       <Card>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label className="mb-2">Prompt Title</Label>
+            <Input
+              placeholder="Prompt Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <Label className="mb-2">Description</Label>
+            <Textarea
+              placeholder="Brief description of what this prompt does..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label className="mb-2">Select Architecture</Label>
-              <Select value={selectedArchId} onValueChange={setSelectedArchId}>
+              <Select
+                value={selectedArchId}
+                onValueChange={handleArchitectureChange}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Architecture" />
                 </SelectTrigger>
@@ -74,72 +113,47 @@ export default function PromptBuilder() {
               </Select>
             </div>
 
-            <div className="">
-              <Label className="mb-2">Select Language</Label>
+            <div>
+              <Label className="mb-2">Model Type</Label>
+              <Select value={modelType} onValueChange={setModelType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Model Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="gpt-4">GPT-4</SelectItem>
+                  <SelectItem value="gpt-3.5">GPT-3.5</SelectItem>
+                  <SelectItem value="claude">Claude</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label className="mb-2">Language</Label>
               <Select value={language} onValueChange={setLanguage}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Language" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="python">Python</SelectItem>
-                  {/* <SelectItem value="typescript">TypeScript</SelectItem> */}
+                  {/* Add more languages here if needed */}
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div>
-            <Label className="mb-2">Description</Label>
-            <Textarea
-              placeholder="Brief description of what this prompt does..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
+            <Label className="mb-2">Write Prompt</Label>
+            <div className="h-[300px] border rounded-md overflow-hidden">
+              <Editor
+                height="100%"
+                defaultValue={`prompt = """ Enter Your Prompt Here """`}
+                language={language}
+                value={prompt}
+                onChange={(val) => setPrompt(val || "")}
+                theme={theme === "dark" ? "vs-dark" : "vs-light"}
+              />
+            </div>
           </div>
-
-          {selectedArchitecture && selectedArchitecture.sections.length > 0 && (
-            <div className="space-y-6">
-              {selectedArchitecture.sections.map((section) => (
-                <div key={section.section_name}>
-                  <Label className="mb-2">{section.section_name}</Label>
-                  {section.section_description && (
-                    <p className="text-muted-foreground text-sm mb-2">
-                      {section.section_description}
-                    </p>
-                  )}
-                  <div className="h-[250px] border rounded-md overflow-hidden">
-                    <Editor
-                      height="100%"
-                      language={language}
-                      value={sectionPrompts[section.section_name] || ""}
-                      onChange={(value) =>
-                        handleSectionChange(section.section_name, value || "")
-                      }
-                      theme={theme === "dark" ? "vs-dark" : "vs-light"}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {!selectedArchitecture && (
-            <div>
-              <Label className="mb-2">Write Prompt</Label>
-              <div className="h-[300px] border rounded-md overflow-hidden">
-                <Editor
-                  defaultValue={`prompt = """ Enter Your Prompt Here """`}
-                  height="100%"
-                  language={language}
-                  value={sectionPrompts["default"] || ""}
-                  onChange={(value) =>
-                    handleSectionChange("default", value || "")
-                  }
-                  theme={theme === "dark" ? "vs-dark" : "vs-light"}
-                />
-              </div>
-            </div>
-          )}
 
           <Button onClick={handleSave} className="mt-4">
             Save Prompt
